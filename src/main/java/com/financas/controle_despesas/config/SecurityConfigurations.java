@@ -47,7 +47,7 @@ public class SecurityConfigurations {
         CorsConfiguration configuration = new CorsConfiguration();
         
         // Autorizar a origem do Angular
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://front-despesas-app.vercel.app/"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://front-despesas-app.vercel.app"));
         
         // Autorizar os métodos HTTP necessários, incluindo o OPTIONS que estava a falhar
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
