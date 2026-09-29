@@ -29,6 +29,7 @@ public class SecurityConfigurations {
         return http
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll();
@@ -46,7 +47,7 @@ public class SecurityConfigurations {
         CorsConfiguration configuration = new CorsConfiguration();
         
         // Autorizar a origem do Angular
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://front-despesas-app.vercel.app/"));
         
         // Autorizar os métodos HTTP necessários, incluindo o OPTIONS que estava a falhar
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
