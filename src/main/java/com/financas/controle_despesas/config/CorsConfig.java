@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Aplica a regra para todas as rotas da API
-                .allowedOrigins("http://localhost:4200") // Porta padrão onde o Angular roda
+                .allowedOrigins("http://localhost:4200", "https://front-despesas-app-v01.vercel.app/") // Porta padrão onde o Angular roda
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Verbos liberados
                 .allowedHeaders("*") // Libera envio de cabeçalhos (como tokens de autenticação no futuro)
                 .allowCredentials(true);
