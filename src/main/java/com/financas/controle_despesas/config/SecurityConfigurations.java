@@ -49,7 +49,7 @@ public class SecurityConfigurations {
         
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://front-despesas-app.vercel.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         
         // 2. Permite a passagem de credenciais (Tokens/Headers protegidos)
         configuration.setAllowCredentials(true); 
@@ -62,7 +62,7 @@ public class SecurityConfigurations {
         
         return source;
     }
-    
+
     // Ensina o Spring a injetar o AuthenticationManager 
     // AuthController
     @Bean
