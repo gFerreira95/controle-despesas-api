@@ -27,16 +27,17 @@ public class SecurityConfigurations {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityFilter securityFilter) throws Exception {
         return http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Mantido apenas uma vez
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
+                    // 1. Liberta explicitamente todas as requisições de Preflight (OPTIONS)
+                    req.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll(); 
+                    
                     req.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll();
                     req.anyRequest().authenticated();
                 })
-                
                 .addFilterBefore(securityFilter,
                         org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -46,21 +47,22 @@ public class SecurityConfigurations {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Autorizar a origem do Angular
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://front-despesas-app.vercel.app"));
-        
-        // Autorizar os métodos HTTP necessários, incluindo o OPTIONS que estava a falhar
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        
-        // Autorizar os cabeçalhos que o Angular vai enviar (incluindo o token futuramente)
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         
+        // 2. Permite a passagem de credenciais (Tokens/Headers protegidos)
+        configuration.setAllowCredentials(true); 
+        
+        // 3. Diz ao navegador para guardar esta permissão CORS por 1 hora (3600 segundos), evitando o Network Error
+        configuration.setMaxAge(3600L); 
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplicar a todas as rotas
+        source.registerCorsConfiguration("/**", configuration); 
         
         return source;
     }
-
+    
     // Ensina o Spring a injetar o AuthenticationManager 
     // AuthController
     @Bean
