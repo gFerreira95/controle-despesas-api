@@ -56,13 +56,19 @@ public class SecurityConfigurations {
         
         config.setAllowCredentials(true);
         config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://front-despesas-app.vercel.app"));
-        config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowedMethods(Arrays.asList("*")); // Permite PUT, DELETE, etc. livremente
+        
+        // A CORREÇÃO: Nunca usar "*" quando allowCredentials for true.
+        // Listamos explicitamente os exatos cabeçalhos que o navegador pede no OPTIONS.
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+        
+        // Listamos os métodos explicitamente (também não usar "*")
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")); 
+        
+        config.setMaxAge(3600L);
         
         source.registerCorsConfiguration("/**", config);
         
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-        // O Escudo: Força os cabeçalhos a existirem mesmo em erros 500/400
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE); 
         return bean;
     }
