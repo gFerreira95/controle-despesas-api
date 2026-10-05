@@ -101,4 +101,17 @@ public class DespesaService {
 
         return new ResumoGastosDTO(totalMes, porCategoria);
     }
+
+    public List<DespesaResponseDTO> listarDespesasDoMes(String usuarioId, int ano, int mes) {
+        YearMonth anoMes = YearMonth.of(ano, mes);
+        LocalDate inicio = anoMes.atDay(1);
+        LocalDate fim = anoMes.atEndOfMonth();
+
+        List<Despesa> despesas = this.repository.findByUsuarioIdAndDataBetween(usuarioId, inicio, fim);
+
+        // Converte as entidades Despesa para DTOs antes de devolver ao Front-end
+        return despesas.stream()
+                .map(DespesaResponseDTO::new) 
+                .collect(Collectors.toList());
+    }
 }

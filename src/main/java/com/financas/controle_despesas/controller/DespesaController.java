@@ -1,5 +1,7 @@
 package com.financas.controle_despesas.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -67,6 +69,17 @@ public class DespesaController {
         
         ResumoGastosDTO resumo = despesaService.obterResumoMes(usuarioLogado.getId(), ano, mes);
         return ResponseEntity.ok(resumo);
+    }
+
+    // Adicione este endpoint na classe DespesaController
+    @GetMapping("/mes")
+    public ResponseEntity<List<DespesaResponseDTO>> listarPorMes(
+            @AuthenticationPrincipal Usuario usuarioLogado,
+            @RequestParam int ano,
+            @RequestParam int mes) {
+        
+        List<DespesaResponseDTO> despesas = despesaService.listarDespesasDoMes(usuarioLogado.getId(), ano, mes);
+        return ResponseEntity.ok(despesas);
     }
 
     @PutMapping("/{id}")
