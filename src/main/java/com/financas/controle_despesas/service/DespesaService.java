@@ -1,6 +1,10 @@
 package com.financas.controle_despesas.service;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,8 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.financas.controle_despesas.dto.DespesaRequestDTO;
 import com.financas.controle_despesas.dto.DespesaResponseDTO;
+import com.financas.controle_despesas.dto.ResumoGastosDTO;
 import com.financas.controle_despesas.model.Despesa;
 import com.financas.controle_despesas.repository.DespesaRepository;
+
+
 
 @Service
 public class DespesaService {
@@ -70,5 +77,28 @@ public class DespesaService {
             throw new RuntimeException("Despesa não encontrada com o ID: " + id);
         }
         repository.deleteById(id);
+    }
+
+    public ResumoGastosDTO obterResumoMes(String usuarioId, int ano, int mes) {
+        YearMonth anoMes = YearMonth.of(ano, mes);
+        LocalDate inicio = anoMes.atDay(1);
+        LocalDate fim = anoMes.atEndOfMonth();
+
+        // Trocado para 'this.repository' (ou 'repository'), que é o nome padrão da sua injeção
+        List<Despesa> despesasDoMes = this.repository.findByUsuarioIdAndDataBetween(usuarioId, inicio, fim);
+
+        // Converte o BigDecimal para double explicitamente com getValor().doubleValue()
+        Double totalMes = despesasDoMes.stream()
+                .mapToDouble(despesa -> despesa.getValor().doubleValue())
+                .sum();
+
+        // Converte o BigDecimal para double também no agrupamento
+        Map<String, Double> porCategoria = despesasDoMes.stream()
+                .collect(Collectors.groupingBy(
+                        despesa -> despesa.getCategoria(),
+                        Collectors.summingDouble(despesa -> despesa.getValor().doubleValue())
+                ));
+
+        return new ResumoGastosDTO(totalMes, porCategoria);
     }
 }

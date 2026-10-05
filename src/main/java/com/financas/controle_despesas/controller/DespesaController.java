@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.financas.controle_despesas.dto.DespesaRequestDTO;
 import com.financas.controle_despesas.dto.DespesaResponseDTO;
+import com.financas.controle_despesas.dto.ResumoGastosDTO;
 import com.financas.controle_despesas.model.Despesa;
 import com.financas.controle_despesas.model.Usuario;
 import com.financas.controle_despesas.service.DespesaService;
@@ -55,6 +57,16 @@ public class DespesaController {
     @GetMapping("/{id}")
     public ResponseEntity<DespesaResponseDTO> buscarPorId(@PathVariable String id) {
         return ResponseEntity.ok(despesaService.buscarPorId(id));
+    }
+
+    @GetMapping("/estatisticas")
+    public ResponseEntity<ResumoGastosDTO> obterEstatisticas(
+            @AuthenticationPrincipal Usuario usuarioLogado,
+            @RequestParam int ano,
+            @RequestParam int mes) {
+        
+        ResumoGastosDTO resumo = despesaService.obterResumoMes(usuarioLogado.getId(), ano, mes);
+        return ResponseEntity.ok(resumo);
     }
 
     @PutMapping("/{id}")

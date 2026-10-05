@@ -16,22 +16,62 @@ public class Usuario implements UserDetails {
     private String id;
     private String login;
     private String senha;
+    private Double rendaMensalBruta;
+    private Double limiteGastos;
+    private String fotoPerfilBase64;
 
     // Construtor vazio para o Spring
-    public Usuario() {}
+    public Usuario() {
+    }
 
     public Usuario(String login, String senha) {
         this.login = login;
         this.senha = senha;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    
-    public String getLogin() { return login; }
-    public void setLogin(String login) { this.login = login; }
-    
-    public void setSenha(String senha) { this.senha = senha; }
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public Double getRendaMensalBruta() {
+        return rendaMensalBruta;
+    }
+
+    public void setRendaMensalBruta(Double rendaMensalBruta) {
+        this.rendaMensalBruta = rendaMensalBruta;
+    }
+
+    public Double getLimiteGastos() {
+        return limiteGastos;
+    }
+
+    public void setLimiteGastos(Double limiteGastos) {
+        this.limiteGastos = limiteGastos;
+    }
+
+    public String getFotoPerfilBase64() {
+        return fotoPerfilBase64;
+    }
+
+    public void setFotoPerfilBase64(String fotoPerfilBase64) {
+        this.fotoPerfilBase64 = fotoPerfilBase64;
+    }
 
     // =========================================================
     // MÉTODOS OBRIGATÓRIOS DA INTERFACE USERDETAILS
@@ -49,18 +89,31 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login; // O Spring usa "Username", mas no nosso caso é o email
+        return login; // O Spring usa "Username", mas no nosso caso é login
+    }
+
+    
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isEnabled() {
+        return true;
+    }
 
-    @Override
-    public boolean isEnabled() { return true; }
+
+
 }
